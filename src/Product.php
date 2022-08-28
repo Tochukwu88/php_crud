@@ -97,6 +97,11 @@ return $message;
         if ( empty($data["product_attribute"])) {
             $errors[] = "product_attribute is required";
         }
+        if (array_key_exists("price", $data)) {
+            if (filter_var($data["price"], FILTER_VALIDATE_INT) === false) {
+                $errors[] = "price must be an integer";
+            }
+        }
         
        
         
