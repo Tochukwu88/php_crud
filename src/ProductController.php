@@ -1,10 +1,22 @@
 <?php
 class ProductController {
-    public function __construct(private Product $product,private string $method)
+    private Product $product;
+    private string $method;
+    public function __construct( Product $product, string $method)
     {
+        $this->product = $product;
+        $this->method = $method;
     }
     public function handleRequest(){
         $this->processRequest();
+    }
+    public function handleDeleteRequest(){
+        $this->processDeleteRequest();
+    }
+    private function processDeleteRequest(){
+        $this->product->deleteAll();
+        http_response_code(200);
+        echo json_encode( (object) array('message' => 'successful') );
     }
     private function processRequest(){
         switch($this->method){

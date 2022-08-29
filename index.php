@@ -13,8 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Methods: POST, GET, DELETE, PUT, PATCH, OPTIONS');
     header('Access-Control-Allow-Headers: token, Content-Type');
     header('Access-Control-Max-Age: 1728000');
-    header('Content-Length: 0');
-    header('Content-Type: text/plain');
+
     die();
 }
 
@@ -22,19 +21,25 @@ header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
 
 
- 
-$parts = explode('/',$_SERVER['REQUEST_URI'] );
 
+$parts = explode('/', $_SERVER['REQUEST_URI']);
+//workaround for issue with delete request on 000webhost
+$deleteUrl = $parts[3] ?? null;
 
 if ($parts[2] != "products") {
     http_response_code(404);
-   echo json_encode( (object) array('message' => 'Not Found'));    
+    echo json_encode((object) array('message' => 'Not Found'));
     exit;
 }
-$db = new Db('localhost','productDB','root','');
+//hardcoded it for simplicity
+$db = new Db('localhost', 'productDB', 'root', '');
 $data = (array) json_decode(file_get_contents("php://input"), true);
-$product = new Product($db,$data);
+$product = new Product($db, $data);
 
-$productController = new ProductController($product,$_SERVER["REQUEST_METHOD"]);
-$productController->handleRequest();
-
+$productController = new ProductController($product, $_SERVER["REQUEST_METHOD"]);
+//workaround for issue with delete request on 000webhost
+if ($deleteUrl == 'delete') {
+    $productController->handleDeleteRequest();
+} else {
+    $productController->handleRequest();
+}
