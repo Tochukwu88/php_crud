@@ -1,9 +1,9 @@
 <?php
 abstract class Crud {
    
-    abstract protected function create(array $data);
+    abstract protected function create();
     abstract protected  function getAll();
     
    
-    abstract protected  function deleteAll($ids);
+    abstract protected  function deleteAll();
 }

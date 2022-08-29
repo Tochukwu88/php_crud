@@ -32,7 +32,8 @@ if ($parts[2] != "products") {
     exit;
 }
 $db = new Db('localhost','productDB','root','');
-$product = new Product($db);
+$data = (array) json_decode(file_get_contents("php://input"), true);
+$product = new Product($db,$data);
 
 $productController = new ProductController($product,$_SERVER["REQUEST_METHOD"]);
 $productController->handleRequest();

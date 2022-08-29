@@ -10,17 +10,38 @@ class ProductController {
         switch($this->method){
 
             case 'POST':
-                $data = (array) json_decode(file_get_contents("php://input"), true);
+               
+                $errors = $this->product->getValidationErrors();
+        if ( ! empty($errors)) {
+            http_response_code(400);
+            echo json_encode( (object) array('message' => $errors)); 
+            return;
+        }
+        $isProductExist =count( $this->product->getOne())>0;
+     
+        if($isProductExist){
+           
+            http_response_code(409);
+            echo json_encode(  (object) array('message' => 'Product already exists')); 
+            return;
+            
+        }
+       
               
-             echo json_encode(  $this->product->create($data));
+              $this->product->create();
+             http_response_code(201);
+ echo json_encode( (object) array('message' => 'successful')); 
+
                 break;
 
             case 'GET':
                 echo json_encode($this->product->getAll()); 
                 break;
             case 'DELETE':
-                $data =  json_decode(file_get_contents("php://input"), true);
-                echo json_encode(  $this->product->deleteAll($data));
+               
+                $this->product->deleteAll();
+                http_response_code(200);
+                echo json_encode( (object) array('message' => 'successful') );
                 break;
 
             default:
@@ -30,6 +51,6 @@ class ProductController {
         }
 
     }
-
+   
 
 }
