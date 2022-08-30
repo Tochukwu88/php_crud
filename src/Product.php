@@ -1,6 +1,8 @@
 <?php
 
+namespace src;
 
+use PDO;
 
 class Product extends Crud
 {

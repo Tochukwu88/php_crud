@@ -1,5 +1,7 @@
 <?php
 
+namespace src;
+
 abstract class Crud
 {
     abstract protected function create();

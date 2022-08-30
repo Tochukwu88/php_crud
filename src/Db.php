@@ -1,5 +1,9 @@
 <?php
 
+namespace src;
+
+use PDO;
+
 class Db
 {
     private string $host;

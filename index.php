@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 spl_autoload_register(function ($class) {
-    require __DIR__ . "/src/$class.php";
+    require str_replace('\\', '/', __DIR__ . "/$class.php");
 });
-set_error_handler("ErrorHandler::handleError");
-set_exception_handler("ErrorHandler::handleException");
+set_error_handler("src\ErrorHandler::handleError");
+set_exception_handler("src\ErrorHandler::handleException");
 header("Content-type: application/json; charset=UTF-8");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
@@ -32,11 +32,11 @@ if ($parts[2] != "products") {
     exit;
 }
 //hardcoded it for simplicity
-$db = new Db('localhost', 'productDB', 'root', '');
+$db = new src\Db('localhost', 'productDB', 'root', '');
 $data = (array) json_decode(file_get_contents("php://input"), true);
-$product = new Product($db, $data);
+$product = new src\Product($db, $data);
 
-$productController = new ProductController($product, $_SERVER["REQUEST_METHOD"]);
+$productController = new src\ProductController($product, $_SERVER["REQUEST_METHOD"]);
 //workaround for issue with delete request on 000webhost
 if ($deleteUrl == 'delete') {
     $productController->handleDeleteRequest();

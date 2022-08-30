@@ -1,5 +1,7 @@
 <?php
 
+namespace src;
+
 class ErrorHandler
 {
     public static function handleException(Throwable $exception): void
