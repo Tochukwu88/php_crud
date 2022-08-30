@@ -1,9 +1,10 @@
 <?php
-abstract class Crud {
-   
+
+abstract class Crud
+{
     abstract protected function create();
-    abstract protected  function getAll();
-    
-   
-    abstract protected  function deleteAll();
+    abstract protected function getAll();
+
+
+    abstract protected function deleteAll();
 }
