@@ -1,6 +1,8 @@
 <?php
 
-namespace src;
+namespace Src\Controller;
+
+use Src\DbLogic\Product;
 
 class ProductController
 {

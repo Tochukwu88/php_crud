@@ -1,8 +1,9 @@
 <?php
 
-namespace src;
+namespace Src\DbLogic;
 
 use PDO;
+use Src\Config\Db;
 
 class Product extends Crud
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace src;
+namespace Src\DbLogic;
 
 abstract class Crud
 {

@@ -1,0 +1,15 @@
+{
+    "name": "teecee/tuts",
+    "authors": [
+        {
+            "name": "Tochukwu EBenezer",
+            "email": "ebenezerokeke99@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Src\\": "src/"
+        }
+    }
+}
