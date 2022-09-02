@@ -35,7 +35,7 @@ none
 
 - Add your database credentials
 
-- Create a table using the query in [src/config/Db.sql].
+- Create a table using the query in [src/Config/Db.sql].
 
 ## Usage
 
