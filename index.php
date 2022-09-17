@@ -4,10 +4,11 @@ declare(strict_types=1);
 require __DIR__ . "/vendor/autoload.php";
 
 
-use Src\DbLogic\Product;
+use Src\DbLogic\SqlLogic;
 
 use Src\Controller\ProductController;
 use Src\Config\Db;
+use Src\ProductService\Product;
 
 set_error_handler("Src\Utils\ErrorHandler::handleError");
 set_exception_handler("Src\Utils\ErrorHandler::handleException");
@@ -38,9 +39,11 @@ if ($parts[2] != "products") {
 //hardcoded it for simplicity
 $db = new Db('localhost', 'productDB', 'root', '');
 $data = (array) json_decode(file_get_contents("php://input"), true);
-$product = new Product($db, $data);
 
-$productController = new ProductController($product, $_SERVER["REQUEST_METHOD"]);
+$sql = new SqlLogic($db, "product");
+$product= new Product($sql);
+$productController = new ProductController($product, $data, $_SERVER["REQUEST_METHOD"]);
+
 //workaround for issue with delete request on 000webhost
 if ($deleteUrl == 'delete') {
     $productController->handleDeleteRequest();

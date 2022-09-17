@@ -2,15 +2,18 @@
 
 namespace Src\Controller;
 
-use Src\DbLogic\Product;
+use Src\Interfaces\ProductServiceInterface;
 
 class ProductController
 {
-    private Product $product;
+    private $product;
+    private $data;
     private string $method;
-    public function __construct(Product $product, string $method)
+    public function __construct(ProductServiceInterface $product, $data, string $method)
     {
         $this->product = $product;
+        $this->data = $data;
+
         $this->method = $method;
     }
     public function handleRequest()
@@ -23,7 +26,8 @@ class ProductController
     }
     private function processDeleteRequest()
     {
-        $this->product->deleteAll();
+        // this->data['ids'] == "(id1,id2,id3...)";
+        $this->product->deleteAllProducts($this->data['ids']);
         http_response_code(200);
         echo json_encode((object) array('message' => 'successful'));
     }
@@ -32,34 +36,19 @@ class ProductController
         switch($this->method) {
             case 'POST':
 
-                $data = $this->product->getProperties();
-                $errors=$this->getValidationErrors($data);
-                if (! empty($errors)) {
-                    http_response_code(400);
-                    echo json_encode((object) array('message' => $errors));
-                    return;
-                }
-                $isProductExist =count($this->product->getOne())>0;
+                $response =  $this->product->createProduct($this->data);
 
-                if ($isProductExist) {
-                    http_response_code(409);
-                    echo json_encode((object) array('message' => 'Product already exists'));
-                    return;
-                }
-
-
-                $this->product->create();
-                http_response_code(201);
-                echo json_encode((object) array('message' => 'successful'));
+                http_response_code($response['statusCode']);
+                echo json_encode((object) array('message' => $response['message']));
 
                 break;
 
             case 'GET':
-                echo json_encode($this->product->getAll());
+                echo json_encode($this->product->getAllProducts());
                 break;
             case 'DELETE':
-
-                $this->product->deleteAll();
+                // this->data['ids'] == "(id1,id2,id3...)";
+                $this->product->deleteAllProducts($this->data['ids']);
                 http_response_code(200);
                 echo json_encode((object) array('message' => 'successful'));
                 break;
@@ -68,33 +57,5 @@ class ProductController
                 http_response_code(405);
                 header("Allow: GET, POST,DELETE");
         }
-    }
-    public function getValidationErrors($data): array
-    {
-        $errors = [];
-
-
-        if (!$data['name']) {
-            $errors[] = "name is required";
-        }
-        if (!$data['sku']) {
-            $errors[] = "sku is required";
-        }
-        if (!$data['price']) {
-            $errors[] = "price is required";
-        }
-        if (!$data['product_type']) {
-            $errors[] = "product_type is required";
-        }
-        if (!$data['product_attribute']) {
-            $errors[] = "product_attribute is required";
-        }
-        if ($data['price'] && filter_var($data['price'], FILTER_VALIDATE_INT) === false) {
-            $errors[] = "price must be an integer";
-        }
-
-
-
-        return $errors;
     }
 }
