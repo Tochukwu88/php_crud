@@ -4,14 +4,11 @@ declare(strict_types=1);
 require __DIR__ . "/vendor/autoload.php";
 
 
-use Src\DbLogic\SqlLogic;
-
 use Src\Controller\ProductController;
 use Src\Config\Db;
-use Src\ProductService\Product;
 
-set_error_handler("Src\Utils\ErrorHandler::handleError");
-set_exception_handler("Src\Utils\ErrorHandler::handleException");
+// set_error_handler("Src\Utils\ErrorHandler::handleError");
+// set_exception_handler("Src\Utils\ErrorHandler::handleException");
 header("Content-type: application/json; charset=UTF-8");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header('Access-Control-Allow-Origin: *');
@@ -40,9 +37,7 @@ if ($parts[2] != "products") {
 $db = new Db('localhost', 'productDB', 'root', '');
 $data = (array) json_decode(file_get_contents("php://input"), true);
 
-$sql = new SqlLogic($db, "product");
-$product= new Product($sql);
-$productController = new ProductController($product, $data, $_SERVER["REQUEST_METHOD"]);
+$productController = new ProductController($db, $data, $_SERVER["REQUEST_METHOD"]);
 
 //workaround for issue with delete request on 000webhost
 if ($deleteUrl == 'delete') {

@@ -4,29 +4,41 @@ namespace Src\ProductService;
 
 use Src\Interfaces\ProductServiceInterface;
 use Src\Interfaces\DatabaseInterface;
+use Src\Products\Furniture;
+use Src\Products\Dvd;
+use Src\Products\Book;
+use Src\Products\NewProduct;
 
-class Product implements ProductServiceInterface
+class ProductService implements ProductServiceInterface
 {
     private $product;
+    private $newProduct;
     public function __construct(DatabaseInterface $product)
     {
         $this->product = $product;
+        $this->newProduct = new NewProduct(array(
+            "Dvd" => DVD::class,
+            "Furniture" => Furniture::class,
+            "Book" => Book::class
+        ));
     }
     public function createProduct(array $data): array
     {
-        $errors=$this->getValidationErrors($data);
+        $new = $this->newProduct->newProduct($data);
+        $properties =$new->getProperties();
+        $errors=$this->getValidationErrors($properties);
 
         if (! empty($errors)) {
             return  array('message' => $errors,'statusCode' => 400);
         }
-        $isProductExist =count($this->getOneProduct('sku', $data['sku']))>0;
+        $isProductExist =count($this->getOneProduct('sku', $properties['sku']))>0;
 
         if ($isProductExist) {
             return  array('message' =>  'Product already exists','statusCode' => 409);
         }
 
 
-        $this->product->create($data);
+        $this->product->create($properties);
         return  array('message' =>  'Successful','statusCode' => 201);
     }
     public function getAllProducts(): array

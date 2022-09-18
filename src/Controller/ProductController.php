@@ -3,17 +3,22 @@
 namespace Src\Controller;
 
 use Src\Interfaces\ProductServiceInterface;
+use Src\Interfaces\DatabaseInterface;
+use Src\DbLogic\SqlLogic;
+use Src\ProductService\ProductService;
+use Src\Config\Db;
 
 class ProductController
 {
-    private $product;
-    private $data;
+    private array $data;
+    private DatabaseInterface $sql;
+    private ProductServiceInterface $productService;
     private string $method;
-    public function __construct(ProductServiceInterface $product, $data, string $method)
+    public function __construct(Db $db, array $data, string $method)
     {
-        $this->product = $product;
         $this->data = $data;
-
+        $this->sql = new SqlLogic($db, "product");
+        $this->productService= new ProductService($this->sql);
         $this->method = $method;
     }
     public function handleRequest()
@@ -27,7 +32,7 @@ class ProductController
     private function processDeleteRequest()
     {
         // this->data['ids'] == "(id1,id2,id3...)";
-        $this->product->deleteAllProducts($this->data['ids']);
+        $this->productService->deleteAllProducts($this->data['ids']);
         http_response_code(200);
         echo json_encode((object) array('message' => 'successful'));
     }
@@ -36,7 +41,7 @@ class ProductController
         switch($this->method) {
             case 'POST':
 
-                $response =  $this->product->createProduct($this->data);
+                $response =  $this->productService->createProduct($this->data);
 
                 http_response_code($response['statusCode']);
                 echo json_encode((object) array('message' => $response['message']));
@@ -44,11 +49,11 @@ class ProductController
                 break;
 
             case 'GET':
-                echo json_encode($this->product->getAllProducts());
+                echo json_encode($this->productService->getAllProducts());
                 break;
             case 'DELETE':
                 // this->data['ids'] == "(id1,id2,id3...)";
-                $this->product->deleteAllProducts($this->data['ids']);
+                $this->productService->deleteAllProducts($this->data['ids']);
                 http_response_code(200);
                 echo json_encode((object) array('message' => 'successful'));
                 break;
