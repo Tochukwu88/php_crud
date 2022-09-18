@@ -4,7 +4,7 @@ namespace Src\Controller;
 
 use Src\Interfaces\ProductServiceInterface;
 use Src\Interfaces\DatabaseInterface;
-use Src\DbLogic\SqlLogic;
+use Src\Query\Query;
 use Src\ProductService\ProductService;
 use Src\Config\Db;
 
@@ -17,7 +17,7 @@ class ProductController
     public function __construct(Db $db, array $data, string $method)
     {
         $this->data = $data;
-        $this->sql = new SqlLogic($db, "product");
+        $this->sql = new Query($db, "product");
         $this->productService= new ProductService($this->sql);
         $this->method = $method;
     }

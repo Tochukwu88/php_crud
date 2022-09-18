@@ -1,12 +1,12 @@
 <?php
 
-namespace Src\DbLogic;
+namespace Src\Query;
 
 use PDO;
 use Src\Config\Db;
 use Src\Interfaces\DatabaseInterface;
 
-class SqlLogic implements DatabaseInterface
+class Query implements DatabaseInterface
 {
     private PDO $conn;
     private string $table;

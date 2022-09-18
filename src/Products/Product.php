@@ -21,6 +21,10 @@ abstract class product
         $this->product_attribute = $product_attribute;
     }
     abstract public function getProperties(): array;
+    public function create($query, $data): void
+    {
+        $query->create($data);
+    }
     public function setId(int $id): void
     {
         $this->id = $id;
@@ -80,5 +84,33 @@ abstract class product
     public function setProduct_attribute(string $product_attribute): void
     {
         $this->product_attribute = $product_attribute;
+    }
+    public function validate(): array
+    {
+        $errors = [];
+
+
+        if (!$this->getName()) {
+            $errors[] = "name is required";
+        }
+        if (!$this->getSku()) {
+            $errors[] = "sku is required";
+        }
+        if (!$this->getPrice()) {
+            $errors[] = "price is required";
+        }
+        if (!$this->getProduct_type()) {
+            $errors[] = "product_type is required";
+        }
+        if (!$this->getProduct_attribute()) {
+            $errors[] = "product_attribute is required";
+        }
+        if ($this->getPrice() && filter_var($this->getPrice(), FILTER_VALIDATE_INT) === false) {
+            $errors[] = "price must be an integer";
+        }
+
+
+
+        return $errors;
     }
 }

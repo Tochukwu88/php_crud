@@ -25,12 +25,13 @@ class ProductService implements ProductServiceInterface
     public function createProduct(array $data): array
     {
         $new = $this->newProduct->newProduct($data);
-        $properties =$new->getProperties();
-        $errors=$this->getValidationErrors($properties);
+
+        $errors=$new->validate();
 
         if (! empty($errors)) {
             return  array('message' => $errors,'statusCode' => 400);
         }
+        $properties =$new->getProperties();
         $isProductExist =count($this->getOneProduct('sku', $properties['sku']))>0;
 
         if ($isProductExist) {
@@ -38,7 +39,7 @@ class ProductService implements ProductServiceInterface
         }
 
 
-        $this->product->create($properties);
+        $new->create($this->product, $properties);
         return  array('message' =>  'Successful','statusCode' => 201);
     }
     public function getAllProducts(): array

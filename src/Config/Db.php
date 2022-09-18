@@ -16,10 +16,10 @@ class Db
         string $user,
         string $password
     ) {
-        $this->host = $host;
-        $this->name = $name;
-        $this->user = $user;
-        $this->password = $password;
+        $this->host = "localhost";
+        $this->name = 'productDB';
+        $this->user = 'root';
+        $this->password = '';
     }
 
     public function getConnection(): PDO
