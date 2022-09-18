@@ -15,7 +15,7 @@ class Dvd extends Product
             "sku" => $this->getSku(),
             "name" => $this->getName(),
             "price" => $this->getPrice(),
-            "product_type" => "Dvd",
+            "product_type" => "DVD-disc",
             "product_attribute" =>  $this->getProduct_attribute(),
 
         );
