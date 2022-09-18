@@ -17,7 +17,7 @@ class ProductService implements ProductServiceInterface
     {
         $this->product = $product;
         $this->newProduct = new NewProduct(array(
-            "Dvd" => DVD::class,
+            "DVD-disc" => DVD::class,
             "Furniture" => Furniture::class,
             "Book" => Book::class
         ));
